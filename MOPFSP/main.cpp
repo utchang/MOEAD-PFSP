@@ -4,6 +4,7 @@
 using namespace std;
 
 #include "instance.h"
+#include "individual.h"
 
 void loadInstance(CInstance& instance, const string& fname)
 {
@@ -40,6 +41,10 @@ int main()
 {
     vector<CInstance> instances;
     loadAllInstance(instances);
+
+    CIndividual indv(20);
+    for(size_t i = 0; i < indv.size(); i += 1)
+        cout << indv[i] << endl;
 
     return 0;
 }
