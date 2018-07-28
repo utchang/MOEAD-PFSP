@@ -5,6 +5,7 @@ using namespace std;
 
 #include "instance.h"
 #include "individual.h"
+#include "evaluator.h"
 
 void loadInstance(CInstance& instance, const string& fname)
 {
@@ -45,6 +46,10 @@ int main()
     CIndividual indv(20);
     for(size_t i = 0; i < indv.size(); i += 1)
         cout << indv[i] << endl;
+
+    Evaluate(indv, instances[0]);
+    for(int obj : indv.objs())
+        cout << obj << endl;
 
     return 0;
 }
