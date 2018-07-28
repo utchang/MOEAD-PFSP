@@ -2,6 +2,7 @@
 #define CINDIVIDUAL_H
 
 #include <vector>
+#include <ostream>
 
 const int NUM_OBJECTIVES = 2;
 
@@ -29,6 +30,8 @@ class CIndividual
         TDecVec _permutation;
         TObjVec _objectives;
 };
+
+std::ostream& operator<<(std::ostream& os, const CIndividual& indv);
 
 typedef std::vector<CIndividual> CPopulation;
 
