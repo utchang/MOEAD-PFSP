@@ -24,6 +24,7 @@ class CIndividual
         const TGene& operator[](std::size_t i) const { return _permutation[i]; }
         TGene& operator[](std::size_t i) { return _permutation[i]; }
 
+        std::vector< std::vector<int> > schedule;
     private:
         TDecVec _permutation;
         TObjVec _objectives;

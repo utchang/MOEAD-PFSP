@@ -48,6 +48,7 @@ int main()
         cout << indv[i] << endl;
 
     Evaluate(indv, instances[0]);
+    //Evaluate.detail(indv, instances[0]);
     for(int obj : indv.objs())
         cout << obj << endl;
 

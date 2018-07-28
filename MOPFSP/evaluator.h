@@ -8,6 +8,7 @@ class CEvaluator
 {
     public:
         void operator()(CIndividual&, const CInstance&) const;
+        void detail(CIndividual&, const CInstance&) const;
 };
 
 extern CEvaluator Evaluate;
