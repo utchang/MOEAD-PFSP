@@ -61,21 +61,22 @@ void CEvaluator::detail(CIndividual& indv, const CInstance& instance) const
     indv.objs()[1] = totalFlowTime;
 }
 
-bool CEvaluator::genttable(std::ifstream& ifile, const CIndividual& indv, const CInstance& instance)
+bool CEvaluator::genttable(std::ofstream& ofile, const CIndividual& indv, const CInstance& instance)
 {
     if(indv.schedule.size() > 0)
     {
-        if(!ifile.is_open()) return false;
+        if(!ofile.is_open()) return false;
 
         for(std::size_t i = 0; i < indv.schedule.size(); i += 1)
         {
             std::string mid = "M" + std::to_string(i+1);
             for(std::size_t j = 0; j < indv.schedule[i].size(); j += 1)
             {
-                std::string task = mid + ", ";
+                std::string jid = "J" + std::to_string(j+1);
+                std::string task = mid + ",";
                 task += std::to_string(indv.schedule[i][j] - instance.processingTimes(i, j));
-                task = task + ", " + std::to_string(indv.schedule[i][j]) + "\n";
-                ifile >> task;
+                task = task + "," + std::to_string(indv.schedule[i][j]) + "," + jid + "\n";
+                ofile << task;
             }
         }
 

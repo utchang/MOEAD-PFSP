@@ -10,7 +10,7 @@ class CEvaluator
     public:
         void operator()(CIndividual&, const CInstance&) const;
         void detail(CIndividual&, const CInstance&) const;
-        bool genttable(std::ifstream&, const CIndividual&, const CInstance&);
+        bool genttable(std::ofstream&, const CIndividual&, const CInstance&);
 };
 
 extern CEvaluator Evaluate;

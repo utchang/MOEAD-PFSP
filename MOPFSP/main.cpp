@@ -7,15 +7,6 @@ using namespace std;
 #include "individual.h"
 #include "evaluator.h"
 
-bool genTimeTable(const CIndividual& indv, const CInstance& instance)
-{
-    // load and check if exist, if not then create, otherwise return false
-    // map(order, filename), filename = map.size()+1
-    // call evaluator.ganttable(in, indv, instance) to generate
-    // outside: script to generate gantt charts
-    return true;
-}
-
 void loadInstance(CInstance& instance, const string& fname)
 {
     ifstream ifile;
@@ -56,5 +47,13 @@ int main()
     //Evaluate(indv, instances[0]);
     Evaluate.detail(indv, instances[0]);
     cout << indv << endl;
+
+    string fname = std::to_string(indv.objs()[0]);
+    fname += "_";
+    fname += std::to_string(indv.objs()[1]);
+    ofstream ofile;
+    ofile.open(fname, std::ifstream::out);
+    if(Evaluate.genttable(ofile, indv, instances[0]))
+        ofile.close();
     return 0;
 }
