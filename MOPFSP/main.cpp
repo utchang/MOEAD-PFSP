@@ -45,15 +45,6 @@ int main()
 
     CIndividual indv(instances[0].numJobs());
     //Evaluate(indv, instances[0]);
-    Evaluate.detail(indv, instances[0]);
     cout << indv << endl;
-
-    string fname = std::to_string(indv.objs()[0]);
-    fname += "_";
-    fname += std::to_string(indv.objs()[1]);
-    ofstream ofile;
-    ofile.open(fname, std::ifstream::out);
-    if(Evaluate.genttable(ofile, indv, instances[0]))
-        ofile.close();
     return 0;
 }
