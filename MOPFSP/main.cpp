@@ -44,7 +44,7 @@ int main()
     loadAllInstance(instances);
 
     CIndividual indv(instances[0].numJobs());
-    //Evaluate(indv, instances[0]);
+    Evaluate(indv, instances[0]);
     cout << indv << endl;
     return 0;
 }
