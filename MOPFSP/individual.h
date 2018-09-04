@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <ostream>
+#include <algorithm>
 
 const int NUM_OBJECTIVES = 2;
 
@@ -24,6 +25,8 @@ class CIndividual
         TObjVec& objs() { return _objectives; }
         const TGene& operator[](std::size_t i) const { return _permutation[i]; }
         TGene& operator[](std::size_t i) { return _permutation[i]; }
+
+        void shuffle() { std::random_shuffle(vars().begin(), vars().end()); }
     private:
         TDecVec _permutation;
         TObjVec _objectives;
