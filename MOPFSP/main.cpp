@@ -6,6 +6,7 @@ using namespace std;
 #include "instance.h"
 #include "individual.h"
 #include "evaluator.h"
+#include "lox.h"
 
 void loadInstance(CInstance& instance, const string& fname)
 {
@@ -40,11 +41,27 @@ void loadAllInstance(vector<CInstance>& instances)
 
 int main()
 {
+    srand(0);
+
     vector<CInstance> instances;
     loadAllInstance(instances);
 
-    CIndividual indv(instances[0].numJobs());
-    Evaluate(indv, instances[0]);
-    cout << indv << endl;
+    const CInstance& ins = instances[0];
+    const int num_jobs = ins.numJobs();
+
+    CIndividual a(num_jobs), b(num_jobs);
+    a.shuffle();
+    b.shuffle();
+    Evaluate(a, ins);
+    Evaluate(b, ins);
+    cout << a << endl << b << endl;
+
+    vector<CIndividual> offspring;
+    const vector<CIndividual>& parents = {a, b};
+    LinearOrderCrossover(offspring, parents);
+    Evaluate(offspring[0], ins);
+    Evaluate(offspring[1], ins);
+    cout << offspring[0] << endl << offspring[1] << endl;
+
     return 0;
 }
