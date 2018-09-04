@@ -33,7 +33,7 @@ bool CLinearOrderCrossover::operator()(std::vector<CIndividual>& offspring,
         offspring[i].objs().resize(NUM_OBJECTIVES);
         for(int j = m; j <= n; j += 1)
         {
-            int gene = parents[i][j];
+            CIndividual::TGene gene = parents[i][j];
             offspring[i][j] = gene;
             mark[i][gene] = 1;
         }
@@ -42,7 +42,6 @@ bool CLinearOrderCrossover::operator()(std::vector<CIndividual>& offspring,
     // stage 2
     for(std::size_t i = 0; i < offspring.size(); i += 1)
     {
-        // gene from another parents, start from the beginning
         int j = 0;
         for(int k = 0; k < length; k += 1)
         {
