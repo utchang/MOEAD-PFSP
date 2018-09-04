@@ -37,15 +37,18 @@ int MathAux::max(const std::vector<int>& nums)
     }
     return m;
 }
-
+#include <iostream>
+using namespace std;
 void MathAux::rand_seq(std::vector<int>& seq, int lb, int ub, int size)
 {
     static std::vector<int> numbers;
-    numbers.resize(ub-lb);
-    numbers.clear();
-    for(int i = lb; i <= ub; i += 1)
+    numbers.resize(ub-lb+1);
+    std::fill(numbers.begin(), numbers.end(), 0);
+
+    for(int& n : numbers)
     {
-        numbers[i-lb] = i;
+        n = lb;
+        lb += 1;
     }
     std::random_shuffle(numbers.begin(), numbers.end());
 

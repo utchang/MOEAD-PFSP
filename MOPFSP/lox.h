@@ -13,4 +13,6 @@ class CLinearOrderCrossover
         double _cr;
 };
 
+extern CLinearOrderCrossover LinearOrderCrossover;
+
 #endif // CLINEARORDERCROSSOVER_H
