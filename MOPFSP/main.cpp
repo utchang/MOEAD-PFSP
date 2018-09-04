@@ -7,6 +7,7 @@ using namespace std;
 #include "individual.h"
 #include "evaluator.h"
 #include "lox.h"
+#include "mutation.h"
 
 void loadInstance(CInstance& instance, const string& fname)
 {
@@ -49,6 +50,7 @@ int main()
     const CInstance& ins = instances[0];
     const int num_jobs = ins.numJobs();
 
+    // random generate 2 individuals
     CIndividual a(num_jobs), b(num_jobs);
     a.shuffle();
     b.shuffle();
@@ -56,11 +58,16 @@ int main()
     Evaluate(b, ins);
     cout << a << endl << b << endl;
 
+    // lox testing
     vector<CIndividual> offspring;
     const vector<CIndividual>& parents = {a, b};
     LinearOrderCrossover(offspring, parents);
     Evaluate(offspring[0], ins);
     Evaluate(offspring[1], ins);
+    cout << offspring[0] << endl << offspring[1] << endl;
+
+    if(InsertMutation(offspring[0])) Evaluate(offspring[0], ins);
+    if(SwapMutation(offspring[1])) Evaluate(offspring[1], ins);
     cout << offspring[0] << endl << offspring[1] << endl;
 
     return 0;
