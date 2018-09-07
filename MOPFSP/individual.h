@@ -27,11 +27,14 @@ class CIndividual
         TGene& operator[](std::size_t i) { return _permutation[i]; }
 
         void shuffle() { std::random_shuffle(vars().begin(), vars().end()); }
+
+        friend bool operator < (const CIndividual& l, const CIndividual& r);
     private:
         TDecVec _permutation;
         TObjVec _objectives;
 };
 
+bool operator < (const CIndividual& l, const CIndividual& r);
 std::ostream& operator<<(std::ostream& os, const std::vector<int>& vec);
 std::ostream& operator<<(std::ostream& os, const CIndividual& indv);
 
