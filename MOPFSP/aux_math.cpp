@@ -37,8 +37,7 @@ int MathAux::max(const std::vector<int>& nums)
     }
     return m;
 }
-#include <iostream>
-using namespace std;
+
 void MathAux::rand_seq(std::vector<int>& seq, int lb, int ub, int size)
 {
     static std::vector<int> numbers;
@@ -57,4 +56,16 @@ void MathAux::rand_seq(std::vector<int>& seq, int lb, int ub, int size)
     {
         seq[i] = numbers[i];
     }
+}
+
+double MathAux::euclidean_distance(const std::vector<double>& p,
+                                   const std::vector<double>& q)
+{
+    double d = 0.;
+    for(std::size_t i = 0; i < p.size(); i += 1)
+    {
+        double diff = (p[i] - q[i]);
+        d += diff*diff;
+    }
+    return sqrt(d);
 }

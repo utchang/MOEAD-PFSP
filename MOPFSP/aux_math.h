@@ -18,6 +18,7 @@ namespace MathAux
     int max(const std::vector<int>&);
 
     void rand_seq(std::vector<int>& seq, int lb, int ub, int size);
+    double euclidean_distance(const std::vector<double>&, const std::vector<double>&);
 }
 
 #endif // AUX_MATH
