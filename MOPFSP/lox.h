@@ -1,8 +1,10 @@
 #ifndef CLINEARORDERCROSSOVER_H
 #define CLINEARORDERCROSSOVER_H
 
-#include "individual.h"
 #include "parameter.h"
+#include <vector>
+
+class CIndividual;
 
 class CLinearOrderCrossover
 {

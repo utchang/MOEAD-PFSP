@@ -4,7 +4,6 @@
 #include <vector>
 
 class CIndividual;
-class CObjectiveVector;
 
 // ----------------------------------------------------------------------------------
 //			BComparator : the base class of comparison operators

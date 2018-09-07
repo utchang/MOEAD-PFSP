@@ -1,4 +1,6 @@
 #include "evaluator.h"
+#include "individual.h"
+#include "instance.h"
 #include <vector>
 #include <string>
 

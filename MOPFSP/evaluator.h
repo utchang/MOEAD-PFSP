@@ -1,9 +1,10 @@
 #ifndef CEVALUATOR_H
 #define CEVALUATOR_H
 
-#include "individual.h"
-#include "instance.h"
 #include <fstream>
+
+class CIndividual;
+class CInstance;
 
 class CEvaluator
 {

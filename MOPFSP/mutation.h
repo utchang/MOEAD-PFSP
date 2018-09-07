@@ -2,7 +2,8 @@
 #define CINSERTMUTATION_H
 
 #include "parameter.h"
-#include "individual.h"
+
+class CIndividual;
 
 class CInsertMutation
 {

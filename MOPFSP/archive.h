@@ -1,10 +1,10 @@
 #ifndef ARCHIVE_H
 #define ARCHIVE_H
 
-#include "individual.h"
 #include <ostream>
+#include "individual.h"
 
-class CArchive : public CPopulation
+class CArchive : public TPopulation
 {
     public:
         bool update(const CIndividual& indv);

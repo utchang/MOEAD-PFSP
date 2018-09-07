@@ -38,6 +38,6 @@ bool operator < (const CIndividual& l, const CIndividual& r);
 std::ostream& operator<<(std::ostream& os, const std::vector<int>& vec);
 std::ostream& operator<<(std::ostream& os, const CIndividual& indv);
 
-typedef std::vector<CIndividual> CPopulation;
+typedef std::vector<CIndividual> TPopulation;
 
 #endif // CINDIVIDUAL_H
