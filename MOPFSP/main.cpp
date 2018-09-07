@@ -8,6 +8,7 @@ using namespace std;
 #include "evaluator.h"
 #include "lox.h"
 #include "mutation.h"
+#include "archive.h"
 
 void loadInstance(CInstance& instance, const string& fname)
 {
@@ -66,9 +67,25 @@ int main()
     Evaluate(offspring[1], ins);
     cout << offspring[0] << endl << offspring[1] << endl;
 
+    // mutation testing
     if(InsertMutation(offspring[0])) Evaluate(offspring[0], ins);
     if(SwapMutation(offspring[1])) Evaluate(offspring[1], ins);
     cout << offspring[0] << endl << offspring[1] << endl;
 
+    cout << "==================================" << endl;
+    // ParetoDominance testing
+    CArchive solutions;
+    for(int i = 0; i < 10; i += 1)
+    {
+        CIndividual s(num_jobs);
+        s.shuffle();
+        Evaluate(s, ins);
+        cout << s << endl;
+        solutions.update(s);
+    }
+    cout << "==================================" << endl;
+    std::sort(solutions.begin(), solutions.end());
+    for(const CIndividual& indv : solutions)
+        cout << indv << endl;
     return 0;
 }
