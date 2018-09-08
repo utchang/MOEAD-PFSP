@@ -42,6 +42,15 @@ void loadAllInstance(vector<CInstance>& instances)
     }
 }
 
+void save_results(const CArchive& solutions)
+{
+    // then drawing the gantt charts to observe
+    ofstream fout("permutations.txt");
+    for(const CIndividual& s : solutions)
+        fout << s.vars() << endl;
+    fout.close();
+}
+
 int main()
 {
     srand(0);
@@ -49,7 +58,7 @@ int main()
     vector<CInstance> instances;
     loadAllInstance(instances);
 
-    const CInstance& ins = instances[0];
+    const CInstance& ins = instances[31];
     const int num_jobs = ins.numJobs();
 
     // random generate 2 individuals
@@ -95,6 +104,8 @@ int main()
     solutions = moead.solutions();
     for(const CIndividual& s : solutions)
         cout << s << endl;
+
+    //save_results(solutions);
 
     return 0;
 }
