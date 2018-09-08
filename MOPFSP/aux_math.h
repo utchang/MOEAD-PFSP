@@ -19,6 +19,8 @@ namespace MathAux
 
     void rand_seq(std::vector<int>& seq, int lb, int ub, int size);
     double euclidean_distance(const std::vector<double>&, const std::vector<double>&);
+    double perpendicular_distance(const std::vector<double>&, const std::vector<double>&);
+    void normalize(std::vector<double>& nv, const std::vector<int>& v, const std::vector<int>& min, const std::vector<int>& max);
 }
 
 #endif // AUX_MATH

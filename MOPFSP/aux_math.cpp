@@ -69,3 +69,38 @@ double MathAux::euclidean_distance(const std::vector<double>& p,
     }
     return sqrt(d);
 }
+
+double MathAux::perpendicular_distance(const std::vector<double>& direction,
+                                       const std::vector<double>& point)
+{
+double numerator = 0, denominator = 0;
+	for (size_t i = 0; i<direction.size(); i += 1)
+	{
+		numerator += direction[i] * point[i];
+		denominator += MathAux::square(direction[i]);
+	}
+	double k = numerator / denominator;
+
+	double d = 0;
+	for (size_t i = 0; i<direction.size(); i += 1)
+	{
+		d += MathAux::square(k*direction[i] - point[i]);
+	}
+	return sqrt(d);
+}
+
+void MathAux::normalize(std::vector<double>& normalized_value,
+                        const std::vector<int>& value,
+                        const std::vector<int>& min,
+                        const std::vector<int>& max)
+{
+    normalized_value.resize(value.size());
+    for(std::size_t i = 0; i < normalized_value.size(); i += 1)
+    {
+        if(min[i] == max[i]) normalized_value[i] = 0.;
+        else
+        {
+            normalized_value[i] = (value[i] - min[i]) / static_cast<double>(max[i] - min[i]);
+        }
+    }
+}
