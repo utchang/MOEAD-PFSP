@@ -9,6 +9,7 @@ using namespace std;
 #include "lox.h"
 #include "mutation.h"
 #include "archive.h"
+#include "moead.h"
 
 void loadInstance(CInstance& instance, const string& fname)
 {
@@ -87,5 +88,13 @@ int main()
     std::sort(solutions.begin(), solutions.end());
     for(const CIndividual& indv : solutions)
         cout << indv << endl;
+
+    cout << "==================================" << endl;
+    CMOEAD moead;
+    moead.solve(ins);
+    solutions = moead.solutions();
+    for(const CIndividual& s : solutions)
+        cout << s << endl;
+
     return 0;
 }

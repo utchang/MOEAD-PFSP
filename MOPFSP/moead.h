@@ -23,9 +23,11 @@ class CMOEAD : public BAlgorithm
         void update_ideal(const CIndividual&);
         void update_nadir();
         void mating(std::vector<int>&, std::size_t) const;
-        void local_replacement(const CIndividual&, std::size_t);
-        void global_replacement(const CIndividual&);
-        void distance_replacement(const CIndividual&);
+        bool local_replacement(const CIndividual&, std::size_t);
+        bool global_replacement(const CIndividual&);
+        bool distance_replacement(const CIndividual&);
+        double weighted_sum(const CIndividual::TObjVec&, const CSubproblem::TWeiObj&, const std::vector<int>&, const std::vector<int>&) const;
+        double tchebycheff(const CIndividual::TObjVec&, const CSubproblem::TWeiObj&, const std::vector<int>&, const std::vector<int>&) const;
 };
 
 #endif // MOEAD_H

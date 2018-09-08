@@ -3,8 +3,13 @@
 #include "instance.h"
 #include "evaluator.h"
 #include "aux_math.h"
+#include "comparator.h"
+#include "mutation.h"
+#include "lox.h"
 #include <climits>
 
+#include <iostream>
+using namespace std;
 void CMOEAD::solve(const CInstance& instance)
 {
     _subproblems.resize(POPULATION_SIZE);
@@ -22,7 +27,7 @@ void CMOEAD::solve(const CInstance& instance)
         _solutions.update(_subproblems[i].sol());
     }
 
-    static std::vector<int> parents(2);
+    static std::vector<int> parents_id(2);
     static std::vector<CIndividual> offspring(2);
     for(CIndividual& indv : offspring)
     {
@@ -35,7 +40,22 @@ void CMOEAD::solve(const CInstance& instance)
         update_nadir();
         for(int j = 0; j < POPULATION_SIZE; j += 1)
         {
-            //TODO
+            mating(parents_id, j);
+            const std::vector<CIndividual>& parents = { _subproblems[parents_id[0]].sol(),
+                                                        _subproblems[parents_id[1]].sol()};
+            LinearOrderCrossover(offspring, parents);
+            for(std::size_t k = 0; k < offspring.size(); k += 1)
+            {
+                InsertMutation(offspring[k]);
+                Evaluate(offspring[k], instance);
+                _solutions.update(offspring[k]);
+                update_ideal(offspring[k]);
+                local_replacement(offspring[k], j);
+
+                // other replacement:
+                //global_replacement(offspring[k]);
+                //distance_replacement(offspring[k]);
+            }
         }
         num_evaluations += POPULATION_SIZE;
     }
@@ -122,3 +142,153 @@ void CMOEAD::update_nadir()
     _nadir = maximum;
 }
 
+void CMOEAD::mating(std::vector<int>& parents_id, std::size_t p_id) const
+{
+    std::size_t range = (MathAux::uniform(0, 1) < MATING_RATE)?MATING_NEIGHBOR_SIZE:POPULATION_SIZE;
+    MathAux::rand_seq(parents_id, 0, range-1, 2);
+    if(range == MATING_NEIGHBOR_SIZE)
+    {
+        for(std::size_t i = 0; i < parents_id.size(); i += 1)
+        {
+            parents_id[i] = _subproblems[p_id].m_nei()[parents_id[i]];
+        }
+    }
+}
+
+bool CMOEAD::local_replacement(const CIndividual& indv, std::size_t p_id)
+{
+    static std::vector<int> max_objs;
+    max_objs = _nadir;
+    for(std::size_t i = 0; i < max_objs.size(); i += 1)
+    {
+        max_objs[i] = std::max(max_objs[i], indv.objs()[i]);
+    }
+
+    std::random_shuffle(_subproblems[p_id].r_nei().begin(), _subproblems[p_id].r_nei().end());
+
+    for(std::size_t i = 0; i < REPLACE_NEIGHBOR_SIZE; i += 1)
+    {
+        std::size_t k = _subproblems[p_id].r_nei()[i];
+        double new_fit = tchebycheff(indv.objs(), _subproblems[k].w(), _ideal, max_objs);
+        double old_fit = tchebycheff(_subproblems[k].sol().objs(), _subproblems[k].w(), _ideal, max_objs);
+        if(new_fit < old_fit || (new_fit == old_fit && !ParetoDominate(_subproblems[p_id].sol(), indv)))
+        {
+            _subproblems[k].sol() = indv;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CMOEAD::global_replacement(const CIndividual& indv)
+{
+    static std::vector<int> max_objs;
+    max_objs = _nadir;
+    for(std::size_t i = 0; i < max_objs.size(); i += 1)
+    {
+        max_objs[i] = std::max(max_objs[i], indv.objs()[i]);
+    }
+
+    double best_fit = std::numeric_limits<double>::max();
+    std::size_t id = 0;
+    for(std::size_t i = 0; i < POPULATION_SIZE; i += 1)
+    {
+        // in the GR method, the WS scalar function can't be use
+        double f = tchebycheff(indv.objs(), _subproblems[i].w(), _ideal, max_objs);
+        if(f < best_fit)
+        {
+            best_fit = f;
+            id = i;
+        }
+    }
+
+    std::random_shuffle(_subproblems[id].r_nei().begin(), _subproblems[id].r_nei().end());
+    for(std::size_t i = 0; i < REPLACE_NEIGHBOR_SIZE; i += 1)
+    {
+        std::size_t k = _subproblems[id].r_nei()[i];
+        double new_fit = tchebycheff(indv.objs(), _subproblems[k].w(), _ideal, max_objs);
+        double old_fit = tchebycheff(_subproblems[k].sol().objs(), _subproblems[k].w(), _ideal, max_objs);
+        if(new_fit < old_fit || (new_fit == old_fit && !ParetoDominate(_subproblems[id].sol(), indv)))
+        {
+            _subproblems[k].sol() = indv;
+            return true;
+        }
+    }
+    return false;
+}
+
+bool CMOEAD::distance_replacement(const CIndividual& indv)
+{
+    static std::vector<int> max_objs;
+    max_objs = _nadir;
+    for(std::size_t i = 0; i < max_objs.size(); i += 1)
+    {
+        max_objs[i] = std::max(max_objs[i], indv.objs()[i]);
+    }
+
+    static std::vector<double> point(NUM_OBJECTIVES);
+    MathAux::normalize(point, indv.objs(), _ideal, max_objs);
+
+    static std::vector< std::pair<double, std::size_t> > rank(POPULATION_SIZE);
+    static std::vector<double> d(POPULATION_SIZE);
+    static CSubproblem::TWeiObj w(NUM_OBJECTIVES);
+    for(std::size_t i = 0; i < d.size(); i += 1)
+    {
+        w = _subproblems[i].w();
+        // if using WS as scalar function
+        // std::swap(w[0], w[1]);
+
+        d[i] = MathAux::perpendicular_distance(w, point);
+        rank[i] = std::make_pair(d[i], i);
+    }
+
+    std::sort(rank.begin(), rank.end());
+
+    for(std::size_t i = 0; i < REPLACE_NEIGHBOR_SIZE; i += 1)
+    {
+        std::size_t id = rank[i].second;
+
+        double new_fit = tchebycheff(indv.objs(), _subproblems[id].w(), _ideal, max_objs);
+        double old_fit = tchebycheff(_subproblems[id].sol().objs(), _subproblems[id].w(), _ideal, max_objs);
+        if(new_fit < old_fit || (new_fit == old_fit && !ParetoDominate(_subproblems[id].sol(), indv)))
+        {
+            _subproblems[id].sol() = indv;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+double CMOEAD::weighted_sum(const CIndividual::TObjVec& objs,
+                            const CSubproblem::TWeiObj& weight,
+                            const std::vector<int>& min,
+                            const std::vector<int>& max) const
+{
+    static std::vector<double> val(NUM_OBJECTIVES);
+    MathAux::normalize(val, objs, min, max);
+
+    double fitness = 0.;
+    for(std::size_t i = 0; i < NUM_GENERATIONS; i += 1)
+    {
+        fitness += val[i] * weight[i];
+    }
+    return fitness;
+}
+
+double CMOEAD::tchebycheff(const CIndividual::TObjVec& objs,
+                           const CSubproblem::TWeiObj& weight,
+                           const std::vector<int>& min,
+                           const std::vector<int>& max) const
+{
+    static std::vector<double> val(NUM_OBJECTIVES);
+    MathAux::normalize(val, objs, min, max);
+
+    double fitness = 0.;
+    for(std::size_t i = 0; i < NUM_OBJECTIVES; i += 1)
+    {
+        double f = val[i]*weight[i];
+        fitness = std::max(fitness, f);
+    }
+    return fitness;
+}
