@@ -36,3 +36,4 @@ TaillardInstance/*
 *.app
 *.depend
 MOPFSP/TaillardInstance/
+MOPFSP/*.txt
