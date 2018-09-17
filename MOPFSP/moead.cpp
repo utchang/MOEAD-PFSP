@@ -35,7 +35,7 @@ void CMOEAD::solve(const CInstance& instance)
         indv.vars().resize(instance.numJobs());
     }
 
-    for(int i = 0; i < NUM_GENERATIONS; i += 1)
+    for(int i = 0; ; i += 1)
     {
         update_nadir();
         for(int j = 0; j < POPULATION_SIZE; j += 1)
@@ -58,6 +58,7 @@ void CMOEAD::solve(const CInstance& instance)
             }
         }
         num_evaluations += POPULATION_SIZE;
+        if(num_evaluations > MAX_EVALUATION) break;
     }
 }
 

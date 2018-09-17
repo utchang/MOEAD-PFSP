@@ -58,7 +58,7 @@ int main()
     vector<CInstance> instances;
     loadAllInstance(instances);
 
-    const CInstance& ins = instances[31];
+    const CInstance& ins = instances[0];
     const int num_jobs = ins.numJobs();
 
     // random generate 2 individuals
